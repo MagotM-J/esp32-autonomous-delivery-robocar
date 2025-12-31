@@ -1,0 +1,16 @@
+# ESP-IDF Build Folders
+build/
+sdkconfig
+sdkconfig.old
+
+# Python / Poetry files
+__pycache__/
+*.py[cod]
+.venv/
+
+# VS Code / IDE
+.vscode/
+.history/
+
+# OS files
+.DS_Store
