@@ -9,10 +9,10 @@
 #define XCLK_FREQ_HZ 20000000
 #define CAMERA_TIMER LEDC_TIMER_1
 #define CAMERA_CHANNEL LEDC_CHANNEL_5
-#define PIXFORMAT PIXFORMAT_JPEG
-#define FRAMESIZE FRAMESIZE_SVGA
-#define QUALITY 10
-#define COUNT 2
+#define PIXFORMAT PIXFORMAT_RGB565
+#define FRAMESIZE FRAMESIZE_QVGA
+#define QUALITY 12
+#define COUNT 1
 #define FB_LOCATION CAMERA_FB_IN_PSRAM
 #define GRAB_MODE CAMERA_GRAB_WHEN_EMPTY
 
@@ -64,7 +64,7 @@ extern "C"
      * @param fb_count     Number of frame buffers to be allocated. If more than one, then each frame will be acquired (double speed)
      */
     void register_camera(int clk_freq, const pixformat_t pixel_fromat, const framesize_t frame_size, int quality, const uint8_t fb_count);
-    esp_err_t camera_capture(camera_fb_t *fb);
+    camera_fb_t* camera_capture();
 
 #ifdef __cplusplus
 }

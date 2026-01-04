@@ -9,8 +9,8 @@
 
 #define GPIO_LA     GPIO_NUM_18
 #define GPIO_LB     GPIO_NUM_19
-#define GPIO_RA     GPIO_NUM_21
-#define GPIO_RB     GPIO_NUM_22
+#define GPIO_RA     GPIO_NUM_32
+#define GPIO_RB     GPIO_NUM_33
 
 #define PWM_LA           LEDC_CHANNEL_0
 #define PWM_LB           LEDC_CHANNEL_1

@@ -10,8 +10,7 @@
 #define MIN_V 50
 #define HSV_H_MAX 180
 
-#define IN_RANGE 255
-#define OUT_OF_RANGE 0
+#define MIN_AREA 500
 
 typedef struct {
     uint8_t h;
@@ -51,6 +50,7 @@ static const h_range_t COLOR_CYAN      = { .min = 86,  .max = 99  };
 static const h_range_t COLOR_BLUE      = { .min = 100, .max = 130 };
 static const h_range_t COLOR_PURPLE    = { .min = 131, .max = 169 };
 
-esp_err_t compute_blob(camera_fb_t *fb, h_range_t *target_color, color_blob_t *blob) ;
+esp_err_t compute_blob(camera_fb_t *fb, const h_range_t *target_color, color_blob_t *blob) ;
+void print_blob_info(color_blob_t *blob);
 
 #endif // COLOR_TRACKER_H

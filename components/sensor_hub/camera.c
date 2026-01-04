@@ -42,22 +42,22 @@ void register_camera(int clk_freq, const pixformat_t pixel_fromat, const framesi
 
     //OV2640 settings( vertically flipped)
     sensor_t *s = esp_camera_sensor_get();
-    s->set_vflip(s, 1); //flip vertically
+    s->set_vflip(s, 1);
+    // Disable Auto White Balance (AWB)
+    s->set_whitebal(s, 0);       
+    s->set_awb_gain(s, 0);       
+    
+    //Boost saturation at the hardware level
+    s->set_saturation(s, 2);
 }
 
-esp_err_t camera_capture(camera_fb_t *fb){
+camera_fb_t* camera_capture(){
     //capture a frame
-    fb = esp_camera_fb_get();
+    camera_fb_t *fb = esp_camera_fb_get();
     if (!fb) {
         ESP_LOGE(TAG, "Frame buffer could not be acquired");
-        return ESP_FAIL;
+        return NULL;
     }
 
-    //replace this with your own function
-    //display_image(fb->width, fb->height, fb->pixformat, fb->buf, fb->len);
-
-    //return the frame buffer back to be reused
-    esp_camera_fb_return(fb);
-
-    return ESP_OK;
+    return fb;
 }

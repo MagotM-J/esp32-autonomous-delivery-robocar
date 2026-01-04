@@ -5,12 +5,12 @@
  * Private function declarations
  */
 static hsv_pixel_t rgb_to_hsv(uint8_t r, uint8_t g, uint8_t b);
-static int is_color_in_range(hsv_pixel_t *pixel, h_range_t *range);
+static int is_color_in_range(hsv_pixel_t *pixel, const h_range_t *range);
 
 /**
  * Public function definitions
  */
-esp_err_t compute_blob(camera_fb_t *fb, h_range_t *target_color, color_blob_t *blob) {
+esp_err_t compute_blob(camera_fb_t *fb, const h_range_t *target_color, color_blob_t *blob) {
 
     int sum_x = 0;
     int sum_y = 0;
@@ -19,14 +19,22 @@ esp_err_t compute_blob(camera_fb_t *fb, h_range_t *target_color, color_blob_t *b
     point_t top_left = { .x = fb->width, .y = fb->height };
     point_t bottom_right = { .x = 0, .y = 0 };
 
+    if (fb->format != PIXFORMAT_RGB565) {
+        printf("Error: format must be RGB565\n");
+        return ESP_FAIL;
+    }
+
     for(int y = 0; y < fb->height; y++) {
         for(int x = 0; x < fb->width; x++) {
-            int pixel_index = y * fb->width + x;
-            int byte_index = pixel_index * 3; // RGB888 format
+            int pixel_index = (y * fb->width + x) * 2;
 
-            uint8_t r = fb->buf[byte_index];
-            uint8_t g = fb->buf[byte_index + 1];
-            uint8_t b = fb->buf[byte_index + 2];
+            uint8_t byte1 = fb->buf[pixel_index];
+            uint8_t byte2 = fb->buf[pixel_index + 1];
+            uint16_t pixel = (byte1 << 8) | byte2;
+
+            uint8_t r = (pixel & 0xF800) >> 8;
+            uint8_t g = (pixel & 0x07E0) >> 3;
+            uint8_t b = (pixel & 0x001F) << 3;
 
             hsv_pixel_t hsv = rgb_to_hsv(r, g, b);
 
@@ -40,15 +48,10 @@ esp_err_t compute_blob(camera_fb_t *fb, h_range_t *target_color, color_blob_t *b
                 if(y < top_left.y)      top_left.y = y;
                 if(x > bottom_right.x)  bottom_right.x = x;
                 if(y > bottom_right.y)  bottom_right.y = y;
-            } else {
-                // Set non-red pixels to black
-                fb->buf[byte_index]     = OUT_OF_RANGE;
-                fb->buf[byte_index + 1] = OUT_OF_RANGE;
-                fb->buf[byte_index + 2] = OUT_OF_RANGE;
-            }
+            } 
         }
     }
-    if(count == 0) {
+    if(count < MIN_AREA) {
         // No pixels found
         blob->area = 0;
         return ESP_ERR_NOT_FOUND;
@@ -60,6 +63,15 @@ esp_err_t compute_blob(camera_fb_t *fb, h_range_t *target_color, color_blob_t *b
     blob->bottom_right = bottom_right;
     blob->area = count;
     return ESP_OK;
+}
+
+void print_blob_info(color_blob_t *blob) {
+    printf("Blob Info:\n");
+    printf(" Centroid: (%d, %d)\n", blob->centroid.x, blob->centroid.y);
+    printf(" Bounding Box: Top-Left(%d, %d), Bottom-Right(%d, %d)\n",
+           blob->top_left.x, blob->top_left.y,
+           blob->bottom_right.x, blob->bottom_right.y);
+    printf(" Area (in pixels): %lu\n", blob->area);
 }
 
 /**
@@ -103,7 +115,7 @@ static hsv_pixel_t rgb_to_hsv(uint8_t r, uint8_t g, uint8_t b) {
     return hsv;
 }
 
-static int is_color_in_range(hsv_pixel_t *pixel, h_range_t *range) {
+static int is_color_in_range(hsv_pixel_t *pixel, const h_range_t *range) {
     if(pixel->s < MIN_S || pixel->v < MIN_V) return 0;
 
     if(range->min > range->max){
