@@ -14,3 +14,11 @@ __pycache__/
 
 # OS files
 .DS_Store
+
+# ESP-IDF Managed Components
+# These are downloaded automatically; don't track them in Git
+managed_components/
+dependencies.lock
+
+# Log files
+*.log

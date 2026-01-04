@@ -1,7 +1,8 @@
 #ifndef MOTOR_DRIVER_H
 #define MOTOR_DRIVER_H
 
-
+#include <stdint.h>
+#include "common_types.h"
 #include "driver/gpio.h"
 #include "driver/ledc.h"
 #include "esp_err.h"

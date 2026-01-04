@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "common_types.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "motor_driver.h"
