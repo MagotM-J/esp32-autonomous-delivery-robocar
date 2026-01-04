@@ -22,3 +22,7 @@ dependencies.lock
 
 # Log files
 *.log
+
+# Security
+secrets.h
+main/secrets.h
