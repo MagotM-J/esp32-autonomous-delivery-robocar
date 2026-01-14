@@ -70,7 +70,7 @@ The color tracker supports the following predefined HSV hue ranges:
 
 ## Color Tracking in Action
 
-Below is a screenshot of the web interface showing the color tracking feature with bounding box and centroid visualization:
+Below is a screenshot of the web interface showing the color tracking feature( set to red ) with bounding box and centroid visualization:
 
 ![Color Tracking Web Interface](docs/screenshots/color_tracking_web_img1.png)
 
@@ -134,7 +134,7 @@ Open this URL in any browser to view the live stream with color tracking overlay
 ```
 ┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
 │  Camera Module  │────▶│  Color Tracker   │────▶│   Navigator     │
-│   (OV2640)      │     │  (HSV Analysis)  │     │ (P-Controller)  │
+│   (OV3660)      │     │  (HSV Analysis)  │     │ (P-Controller)  │
 └─────────────────┘     └──────────────────┘     └────────┬────────┘
                                 │                         │
                                 ▼                         ▼
